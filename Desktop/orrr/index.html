@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple Restaurant</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    .hero {
+      background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1470&q=80') no-repeat center;
+      background-size: cover;
+      height: 300px;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .hero h1 {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">My Restaurant</a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Menu</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="hero mb-4">
+  <h1>Welcome to My Restaurant</h1>
+</div>
+
+<!-- Menu Section -->
+<div class="container mb-4">
+  <h2 class="mb-3">Our Menu</h2>
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=600&q=80" alt="Dish 1" class="img-fluid" />
+      <h5>Grilled Salmon</h5>
+      <p>Fresh salmon with herbs.</p>
+      <p><strong>$18.99</strong></p>
+    </div>
+    <div class="col-md-4 mb-3">
+      <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=80" alt="Dish 2" class="img-fluid" />
+      <h5>Cheeseburger</h5>
+      <p>Juicy beef with cheese.</p>
+      <p><strong>$12.49</strong></p>
+    </div>
+    <div class="col-md-4 mb-3">
+      <img src="https://images.unsplash.com/photo-1516685304081-de7947d419d3?auto=format&fit=crop&w=600&q=80" alt="Dish 3" class="img-fluid" />
+      <h5>Vegan Bowl</h5>
+      <p>Healthy veggies and grains.</p>
+      <p><strong>$14.25</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- About Us -->
+<div class="container mb-4">
+  <h2>About Us</h2>
+  <div class="row align-items-center">
+    <div class="col-md-6">
+      <img src="https://images.unsplash.com/photo-1525610553991-2bede1a236e2?auto=format&fit=crop&w=700&q=80" alt="Restaurant" class="img-fluid" />
+    </div>
+    <div class="col-md-6">
+      <p>We serve fresh and tasty food in a friendly environment. Come enjoy our specialties!</p>
+    </div>
+  </div>
+</div>
+
+<!-- Contact Form -->
+<div class="container mb-4">
+  <h2>Contact Us</h2>
+  <form>
+    <div class="mb-3">
+      <label for="name" class="form-label">Name:</label>
+      <input type="text" id="name" class="form-control" placeholder="Your name" />
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email:</label>
+      <input type="email" id="email" class="form-control" placeholder="Your email" />
+    </div>
+    <div class="mb-3">
+      <label for="message" class="form-label">Message:</label>
+      <textarea id="message" class="form-control" rows="3" placeholder="Your message"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Send</button>
+  </form>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-3">
+  &copy; 2025 My Restaurant
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
