@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pricing Card Component</title>
+<style>
+    
+  .pricing {
+    max-width: 320px;
+    margin: 20px auto;
+    background-color: #fff;
+    box-shadow: 0 0 10px #ccc;
+    padding: 20px;
+    text-align: left;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+  }
+  .title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  .price {
+    font-size: 18px;
+    color: green;
+    margin-bottom: 12px;
+  }
+  .features {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 20px;
+  }
+  .features li {
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+  }
+  .btn {
+    background: blue;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+  .btn:hover {
+    background: darkblue;
+  }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+
+<script>
+  function Card(title, price, features) {
+    const div = document.createElement('div');
+    div.className = 'pricing';
+
+    const h2 = document.createElement('h2');
+    h2.className = 'title';
+    h2.textContent = title;
+
+    const p = document.createElement('p');
+    p.className = 'price';
+    p.textContent = price;
+
+    const ul = document.createElement('ul');
+    ul.className = 'features';
+
+    features.forEach(feature => {
+      const li = document.createElement('li');
+      li.textContent = feature;
+      ul.appendChild(li);
+    });
+
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.textContent = 'Start Trial';
+
+    div.appendChild(h2);
+    div.appendChild(p);
+    div.appendChild(ul);
+    div.appendChild(btn);
+
+    return div;
+  }
+
+  const app = document.getElementById('app');
+
+  const basicPlan = Card('Basic Plan', '$9.99 /month', [
+    '1 GB Storage',
+    'Basic Support',
+    'All Core Features'
+  ]);
+
+  app.appendChild(basicPlan);
+</script>
+
+
+</body>
+</html>
