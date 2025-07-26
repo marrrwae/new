@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Movie Site</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header" id="main-header">
+            <h1 class="logo" id="vibeflix-logo">VibeFlix</h1>
+        </header>
+
+        <!-- Search Section -->
+        <section class="search-section" id="search-section">
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="movie-search-input"
+                    placeholder="Search for movies..."
+                    autocomplete="off"
+                >
+                <button class="search-btn" id="search-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- Movies Grid Section -->
+        <main class="movies-section" id="movies-section">
+            <div class="movies-grid" id="movies-grid">
+                <!-- Sample Movie Cards -->
+                <div class="movie-card" id="movie-card-1">
+                    <div class="movie-poster">
+                        <img src="https://i.pinimg.com/1200x/5d/55/f6/5d55f69bbe7948d202dffbbea4b857d8.jpg" alt="Movie 1" id="poster-1">
+                        <div class="movie-overlay" id="overlay-1">
+                            <button class="play-btn" id="play-btn-1">▶</button>
+                        </div>
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-title" id="title-1">The Dark Knight</h3>
+                        <div class="movie-rating" id="rating-1">
+                            <span class="rating-stars">★★★★★</span>
+                            <span class="rating-number">9.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="movie-card" id="movie-card-2">
+                    <div class="movie-poster">
+                        <img src="https://i.pinimg.com/1200x/b0/ae/a4/b0aea49646879a043ad9f6ec3002e99f.jpg" alt="Movie 2" id="poster-2">
+                        <div class="movie-overlay" id="overlay-2">
+                            <button class="play-btn" id="play-btn-2">▶</button>
+                        </div>
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-title" id="title-2">Inception</h3>
+                        <div class="movie-rating" id="rating-2">
+                            <span class="rating-stars">★★★★★</span>
+                            <span class="rating-number">8.8</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="movie-card" id="movie-card-3">
+                    <div class="movie-poster">
+                        <img src="https://i.pinimg.com/1200x/46/63/95/46639573fd4b919c9b7239ac00481d8c.jpg" alt="Movie 3" id="poster-3">
+                        <div class="movie-overlay" id="overlay-3">
+                            <button class="play-btn" id="play-btn-3">▶</button>
+                        </div>
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-title" id="title-3">Interstellar</h3>
+                        <div class="movie-rating" id="rating-3">
+                            <span class="rating-stars">★★★★☆</span>
+                            <span class="rating-number">8.6</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="movie-card" id="movie-card-4">
+                    <div class="movie-poster">
+                        <img src="https://i.pinimg.com/1200x/89/41/e7/8941e71464be8fe81ade92a86817338e.jpg" alt="Movie 4" id="poster-4">
+                        <div class="movie-overlay" id="overlay-4">
+                            <button class="play-btn" id="play-btn-4">▶</button>
+                        </div>
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-title" id="title-4">Pulp Fiction</h3>
+                        <div class="movie-rating" id="rating-4">
+                            <span class="rating-stars">★★★★★</span>
+                            <span class="rating-number">8.9</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="movie-card" id="movie-card-5">
+                    <div class="movie-poster">
+                        <img src="https://i.pinimg.com/736x/ed/45/16/ed4516338fa5df348c13a2a7ce1e7998.jpg" alt="Movie 5" id="poster-5">
+                        <div class="movie-overlay" id="overlay-5">
+                            <button class="play-btn" id="play-btn-5">▶</button>
+                        </div>
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-title" id="title-5">The Matrix</h3>
+                        <div class="movie-rating" id="rating-5">
+                            <span class="rating-stars">★★★★☆</span>
+                            <span class="rating-number">8.7</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="movie-card" id="movie-card-6">
+                    <div class="movie-poster">
+                        <img src="https://i.pinimg.com/736x/5c/79/03/5c7903b89f8d52b215c0f8370053e795.jpg" alt="Movie 6" id="poster-6">
+                        <div class="movie-overlay" id="overlay-6">
+                            <button class="play-btn" id="play-btn-6">▶</button>
+                        </div>
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-title" id="title-6">Goodfellas</h3>
+                        <div class="movie-rating" id="rating-6">
+                            <span class="rating-stars">★★★★☆</span>
+                            <span class="rating-number">8.7</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+<!-- Trailer Modal -->
+<div id="trailer-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:1000;">
+  <div style="position:relative; width:80vw; max-width:900px; aspect-ratio:16/9; background:#000;">
+    <button id="close-modal" style="position:absolute; top:10px; right:10px; font-size:24px; background:none; border:none; color:white; cursor:pointer;">✖</button>
+    <iframe id="trailer-video" width="100%" height="100%" src="" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+  </div>
+</div>
+
+
+</body>
+</html>
