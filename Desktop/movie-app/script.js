@@ -1,97 +1,311 @@
 const apiKey = 'b6120b2a408b9bbf2e1db90636efc64e';
 const accessToken = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiNjEyMGIyYTQwOGI5YmJmMmUxZGI5MDYzNmVmYzY0ZSIsIm5iZiI6MTc1MzU0NjIwNC4xNTkwMDAyLCJzdWIiOiI2ODg0ZmRkYzdlMDE4OGQ1Y2I3MmU1ZTYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.CxB1tsgytzYpdNS-xvK_tzOTtMXle9-3MAxWBXpTb-s';
 
-// Get popular movies
-async function fetchPopularMovies() {
-  const url = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=en-US&page=1`;
+// Global variables
+let currentMovies = [];
+let currentPage = 1;
+let totalPages = 1;
+let currentQuery = '';
 
-  const response = await fetch(url);
-  const data = await response.json();
-  displayMovies(data.results);
-}
-
-// Display movies on the page
-function displayMovies(movies) {
-  const container = document.getElementById('movie-container');
-  container.innerHTML = '';
-
-  movies.forEach(movie => {
-    const div = document.createElement('div');
-    div.classList.add('movie');
-
-    div.innerHTML = `
-      <h3>${movie.title}</h3>
-      <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
-      <p>${movie.overview}</p>
-      <button onclick="playTrailer(${movie.id})">Watch Trailer</button>
-    `;
-
-    container.appendChild(div);
-  });
-}
-
-// Fetch and embed trailer
-async function playTrailer(movieId) {
-  const url = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${apiKey}&language=en-US`;
-  const response = await fetch(url);
-  const data = await response.json();
-
-  const trailer = data.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
-
-  if (trailer) {
-    const trailerContainer = document.getElementById('trailer-container');
-    trailerContainer.innerHTML = `
-      <iframe width="560" height="315"
-        src="https://www.youtube.com/embed/${trailer.key}"
-        title="Movie Trailer" frameborder="0"
-        allowfullscreen>
-      </iframe>
-    `;
-    trailerContainer.scrollIntoView({ behavior: 'smooth' });
-  } else {
-    alert('Trailer not available.');
-  }
-}
-
-// Call the function to load movies on page load
-document.addEventListener('DOMContentLoaded', fetchPopularMovies);
-
+// DOM elements
+const searchInput = document.getElementById('movie-search-input');
+const searchButton = document.getElementById('search-button');
+const moviesGrid = document.getElementById('movies-grid');
 const trailerModal = document.getElementById('trailer-modal');
 const trailerVideo = document.getElementById('trailer-video');
 const closeModalBtn = document.getElementById('close-modal');
 
-// YouTube trailer URLs for each movie by movie card ID
-const trailers = {
-  'movie-card-1': 'https://www.youtube.com/embed/EXeTwQWrcwY', // The Dark Knight
-  'movie-card-2': 'https://www.youtube.com/embed/YoHD9XEInc0', // Inception
-  'movie-card-3': 'https://www.youtube.com/embed/zSWdZVtXT7E', // Interstellar
-  'movie-card-4': 'https://www.youtube.com/embed/s7EdQ4FqbhY', // Pulp Fiction
-  'movie-card-5': 'https://www.youtube.com/embed/vKQi3bBA1y8', // The Matrix
-  'movie-card-6': 'https://www.youtube.com/embed/2ilzidi_J8Q'  // Goodfellas
-};
+// Initialize the app
+document.addEventListener('DOMContentLoaded', () => {
+    fetchPopularMovies();
+    setupEventListeners();
+});
 
-// Open modal when clicking a play button
-document.querySelectorAll('.play-btn').forEach(button => {
-  button.addEventListener('click', () => {
-    const movieCardId = button.closest('.movie-card').id;
-    const trailerUrl = trailers[movieCardId];
-    if (trailerUrl) {
-      trailerVideo.src = trailerUrl + '?autoplay=1';
-      trailerModal.style.display = 'flex';
+// Set up event listeners
+function setupEventListeners() {
+    searchButton.addEventListener('click', handleSearch);
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    });
+
+    // Close modal functionality
+    closeModalBtn.addEventListener('click', closeTrailerModal);
+    trailerModal.addEventListener('click', (e) => {
+        if (e.target === trailerModal) {
+            closeTrailerModal();
+        }
+    });
+
+    // Add sorting controls
+    addSortingControls();
+}
+
+// Add sorting controls to the page
+function addSortingControls() {
+    const sortingContainer = document.createElement('div');
+    sortingContainer.className = 'sorting-controls';
+    sortingContainer.innerHTML = `
+        <div class="sort-options">
+            <label for="sort-select">Sort by:</label>
+            <select id="sort-select" class="sort-select">
+                <option value="popularity">Popularity</option>
+                <option value="rating">Rating (High to Low)</option>
+                <option value="rating-low">Rating (Low to High)</option>
+                <option value="title">Title (A-Z)</option>
+                <option value="release-date">Release Date</option>
+            </select>
+        </div>
+    `;
+    
+    const moviesSection = document.querySelector('.movies-section');
+    moviesSection.insertBefore(sortingContainer, moviesGrid);
+    
+    document.getElementById('sort-select').addEventListener('change', handleSort);
+}
+
+// Handle search functionality
+async function handleSearch() {
+    const query = searchInput.value.trim();
+    if (!query) {
+        fetchPopularMovies();
+        return;
     }
-  });
-});
+    
+    currentQuery = query;
+    currentPage = 1;
+    showLoadingState();
+    
+    try {
+        const movies = await searchMovies(query);
+        currentMovies = movies;
+        displayMovies(movies);
+    } catch (error) {
+        console.error('Search failed:', error);
+        showErrorState('Search failed. Please try again.');
+    }
+}
 
-// Close modal and stop video
-closeModalBtn.addEventListener('click', () => {
-  trailerVideo.src = '';
-  trailerModal.style.display = 'none';
-});
+// Handle sorting
+function handleSort() {
+    const sortValue = document.getElementById('sort-select').value;
+    const sortedMovies = [...currentMovies];
+    
+    switch (sortValue) {
+        case 'rating':
+            sortedMovies.sort((a, b) => b.vote_average - a.vote_average);
+            break;
+        case 'rating-low':
+            sortedMovies.sort((a, b) => a.vote_average - b.vote_average);
+            break;
+        case 'title':
+            sortedMovies.sort((a, b) => a.title.localeCompare(b.title));
+            break;
+        case 'release-date':
+            sortedMovies.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
+            break;
+        case 'popularity':
+        default:
+            sortedMovies.sort((a, b) => b.popularity - a.popularity);
+            break;
+    }
+    
+    displayMovies(sortedMovies);
+}
 
-// Close modal if clicking outside iframe
-trailerModal.addEventListener('click', (e) => {
-  if (e.target === trailerModal) {
+// Fetch popular movies from TMDb API
+async function fetchPopularMovies() {
+    const url = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=en-US&page=${currentPage}`;
+    
+    showLoadingState();
+    
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Failed to fetch movies');
+        
+        const data = await response.json();
+        currentMovies = data.results;
+        totalPages = data.total_pages;
+        displayMovies(data.results);
+    } catch (error) {
+        console.error('Error fetching popular movies:', error);
+        showErrorState('Failed to load movies. Please try again.');
+    }
+}
+
+// Search movies using TMDb API
+async function searchMovies(query) {
+    const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=en-US&query=${encodeURIComponent(query)}&page=${currentPage}&include_adult=false`;
+    
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Search request failed');
+    
+    const data = await response.json();
+    totalPages = data.total_pages;
+    return data.results;
+}
+
+// Display movies in the grid
+function displayMovies(movies) {
+    if (!movies || movies.length === 0) {
+        showEmptyState();
+        return;
+    }
+    
+    moviesGrid.innerHTML = movies.map(movie => createMovieCard(movie)).join('');
+    
+    // Add event listeners to play buttons
+    document.querySelectorAll('.play-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const movieId = button.getAttribute('data-movie-id');
+            playTrailer(movieId);
+        });
+    });
+}
+
+// Create individual movie card HTML
+function createMovieCard(movie) {
+    const posterUrl = movie.poster_path 
+        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+        : 'https://via.placeholder.com/500x750/333/fff?text=No+Poster';
+    
+    const rating = movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A';
+    const stars = generateStarRating(movie.vote_average);
+    const releaseYear = movie.release_date ? new Date(movie.release_date).getFullYear() : 'TBA';
+    
+    return `
+        <div class="movie-card" data-movie-id="${movie.id}">
+            <div class="movie-poster">
+                <img src="${posterUrl}" 
+                     alt="${movie.title}" 
+                     loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/500x750/333/fff?text=No+Poster'">
+                <div class="movie-overlay">
+                    <button class="play-btn" data-movie-id="${movie.id}" aria-label="Play trailer for ${movie.title}">▶</button>
+                </div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title" title="${movie.title}">${movie.title}</h3>
+                <div class="movie-meta">
+                    <span class="release-year">${releaseYear}</span>
+                </div>
+                <div class="movie-rating">
+                    <span class="rating-stars" title="Rating: ${rating}/10">${stars}</span>
+                    <span class="rating-number">${rating}</span>
+                </div>
+                ${movie.overview ? `<p class="movie-overview" title="${movie.overview}">${truncateText(movie.overview, 100)}</p>` : ''}
+            </div>
+        </div>
+    `;
+}
+
+// Generate star rating display
+function generateStarRating(rating) {
+    if (!rating) return '☆☆☆☆☆';
+    
+    const fullStars = Math.floor(rating / 2);
+    const hasHalfStar = (rating % 2) >= 1;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    
+    return '★'.repeat(fullStars) + 
+           (hasHalfStar ? '☆' : '') + 
+           '☆'.repeat(emptyStars);
+}
+
+// Truncate text for overview
+function truncateText(text, maxLength) {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength).trim() + '...';
+}
+
+// Fetch and play movie trailer
+async function playTrailer(movieId) {
+    try {
+        const url = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${apiKey}&language=en-US`;
+        const response = await fetch(url);
+        
+        if (!response.ok) throw new Error('Failed to fetch trailer');
+        
+        const data = await response.json();
+        const trailer = data.results.find(video => 
+            video.type === 'Trailer' && 
+            video.site === 'YouTube'
+        ) || data.results.find(video => video.site === 'YouTube');
+        
+        if (trailer) {
+            trailerVideo.src = `https://www.youtube.com/embed/${trailer.key}?autoplay=1&rel=0`;
+            trailerModal.style.display = 'flex';
+            trailerModal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        } else {
+            showNotification('Trailer not available for this movie.');
+        }
+    } catch (error) {
+        console.error('Error fetching trailer:', error);
+        showNotification('Failed to load trailer. Please try again.');
+    }
+}
+
+// Close trailer modal
+function closeTrailerModal() {
     trailerVideo.src = '';
     trailerModal.style.display = 'none';
-  }
+    trailerModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = 'auto'; // Restore scrolling
+}
+
+// Show loading state
+function showLoadingState() {
+    moviesGrid.innerHTML = `
+        <div class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Loading movies...</p>
+        </div>
+    `;
+}
+
+// Show empty state
+function showEmptyState() {
+    moviesGrid.innerHTML = `
+        <div class="empty-state">
+            <p>No movies found. Try a different search term.</p>
+        </div>
+    `;
+}
+
+// Show error state
+function showErrorState(message) {
+    moviesGrid.innerHTML = `
+        <div class="error-state">
+            <p>${message}</p>
+            <button onclick="location.reload()" class="retry-btn">Retry</button>
+        </div>
+    `;
+}
+
+// Show notification
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Keyboard navigation support
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && trailerModal.style.display === 'flex') {
+        closeTrailerModal();
+    }
 });
